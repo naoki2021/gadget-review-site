@@ -75,9 +75,9 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     const client = getContentfulClient();
     const response = await client.getEntries<ProductSkeleton>({
       content_type: 'product',
-      'fields.slug': slug as any,
+      'fields.slug': slug,
       limit: 1,
-    });
+    } as any);
 
     return response.items[0] || null;
   } catch (error) {
