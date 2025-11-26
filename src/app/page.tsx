@@ -1,5 +1,6 @@
 import { getAllProducts } from '@/lib/contentful';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -26,6 +27,9 @@ const categories = [
 ];
 
 export default async function Home() {
+  // headers()を呼ぶことで強制的に動的レンダリングになる
+  headers();
+
   const products = await getAllProducts();
 
   return (
