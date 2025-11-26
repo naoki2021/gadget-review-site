@@ -42,7 +42,7 @@ export type Product = Entry<ProductSkeleton, undefined, string>;
 export async function getAllProducts(): Promise<Product[]> {
   const response = await contentfulClient.getEntries<ProductSkeleton>({
     content_type: 'product',
-    order: ['-fields.publishedDate'],
+    order: ['-fields.publishedDate'] as any,
   });
 
   return response.items;
@@ -53,7 +53,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     content_type: 'product',
     'fields.slug': slug,
     limit: 1,
-  });
+  } as any);
 
   if (response.items.length === 0) {
     return null;
@@ -66,8 +66,8 @@ export async function getProductsByCategory(category: string): Promise<Product[]
   const response = await contentfulClient.getEntries<ProductSkeleton>({
     content_type: 'product',
     'fields.category': category,
-    order: ['-fields.publishedDate'],
-  });
+    order: ['-fields.publishedDate'] as any,
+  } as any);
 
   return response.items;
 }
