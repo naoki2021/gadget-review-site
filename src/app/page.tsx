@@ -1,4 +1,3 @@
-
 import { getAllProducts } from '@/lib/contentful';
 import Link from 'next/link';
 
@@ -66,7 +65,7 @@ export default async function Home() {
           {categories.map((category) => (
             <Link
               key={category.slug}
-              href={`/ category / ${category.slug} `}
+              href={`/category/${category.slug}`}
               className="card-hover group relative overflow-hidden rounded-2xl bg-white p-6 shadow-lg dark:bg-slate-800"
             >
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-3xl">
@@ -110,72 +109,74 @@ export default async function Home() {
             className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             すべて見る →
+          </Link>
         </div>
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          ¥39,800
-        </span>
-    </div>
-              </div >
-            </div >
-          ))
-}
-        </div >
-      </section >
 
-  {/* CTAセクション */ }
-  < section className = "rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 p-12 text-center text-white" >
+        {products.length === 0 ? (
+          <div className="text-center py-12 text-slate-500 dark:text-slate-400">
+            記事がまだありません。
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {products.map((product) => (
+              <Link
+                key={product.sys.id}
+                href={`/products/${product.fields.slug}`}
+                className="card-hover overflow-hidden rounded-2xl bg-white shadow-lg dark:bg-slate-800 block"
+              >
+                <div className="h-48 bg-slate-200 dark:bg-slate-700 relative">
+                  {product.fields.mainImage?.fields.file.url ? (
+                    <img
+                      src={product.fields.mainImage.fields.file.url}
+                      alt={product.fields.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-slate-400">
+                      No Image
+                    </div>
+                  )}
+                </div>
+                <div className="p-6">
+                  <div className="mb-2 text-sm font-medium text-blue-600 dark:text-blue-400">
+                    {product.fields.category}
+                  </div>
+                  <h3 className="mb-2 text-xl font-semibold text-slate-900 dark:text-slate-100 line-clamp-2">
+                    {product.fields.title}
+                  </h3>
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                      ¥{product.fields.price.toLocaleString()}
+                    </span>
+                    <div className="flex items-center text-yellow-400">
+                      {'★'.repeat(Math.round(product.fields.rating || 0))}
+                      <span className="ml-1 text-sm text-slate-600 dark:text-slate-400">
+                        ({product.fields.rating})
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* CTAセクション */}
+      <section className="rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 p-12 text-center text-white">
         <h2 className="mb-4 text-3xl font-bold">
           最新のガジェット情報をお届けします
         </h2>
         <p className="mb-8 text-lg text-white/90">
           新しいレビュー記事を随時更新中
         </p>
-        <a
+        <Link
           href="/reviews"
           className="btn-primary inline-block rounded-full bg-white px-8 py-3 font-semibold text-blue-600 hover:bg-white/90 transition-all"
         >
           レビュー一覧を見る
-        </a>
-      </section >
-    </div >
+        </Link>
+      </section>
+    </div>
   );
 }
-
-const categories = [
-  {
-    name: 'ワイヤレスイヤホン',
-    slug: 'wireless-earphones',
-    icon: '🎧',
-    description: 'AirPods、Galaxy Budsなど人気イヤホンをレビュー',
-  },
-  {
-    name: 'スマートウォッチ',
-    slug: 'smartwatch',
-    icon: '⌚',
-    description: 'Apple Watch、Fitbitなど最新モデルを比較',
-  },
-  {
-    name: 'ノートPC',
-    slug: 'laptop',
-    icon: '💻',
-    description: 'MacBook、Surface、ThinkPadなどを徹底解説',
-  },
-  {
-    name: 'スマートフォン',
-    slug: 'smartphone',
-    icon: '📱',
-    description: 'iPhone、Galaxyなど最新スマホをレビュー',
-  },
-  {
-    name: 'カメラ',
-    slug: 'camera',
-    icon: '📷',
-    description: 'ミラーレス、一眼レフ、アクションカメラを比較',
-  },
-  {
-    name: 'タブレット',
-    slug: 'tablet',
-    icon: '📲',
-    description: 'iPad、Androidタブレットをレビュー',
-  },
-];
