@@ -1,4 +1,4 @@
-```javascript
+
 import { getAllProducts } from '@/lib/contentful';
 import Link from 'next/link';
 
@@ -66,7 +66,7 @@ export default async function Home() {
           {categories.map((category) => (
             <Link
               key={category.slug}
-              href={`/ category / ${ category.slug } `}
+              href={`/ category / ${category.slug} `}
               className="card-hover group relative overflow-hidden rounded-2xl bg-white p-6 shadow-lg dark:bg-slate-800"
             >
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-3xl">
@@ -110,19 +110,20 @@ export default async function Home() {
             className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             すべて見る →
-                  </div>
-                  <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                    ¥39,800
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
-      </section>
+        <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+          ¥39,800
+        </span>
+    </div>
+              </div >
+            </div >
+          ))
+}
+        </div >
+      </section >
 
-      {/* CTAセクション */}
-      <section className="rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 p-12 text-center text-white">
+  {/* CTAセクション */ }
+  < section className = "rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 p-12 text-center text-white" >
         <h2 className="mb-4 text-3xl font-bold">
           最新のガジェット情報をお届けします
         </h2>
@@ -135,8 +136,8 @@ export default async function Home() {
         >
           レビュー一覧を見る
         </a>
-      </section>
-    </div>
+      </section >
+    </div >
   );
 }
 
