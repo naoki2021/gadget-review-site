@@ -146,7 +146,7 @@ export default async function Home() {
                   </h3>
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                      ¥{product.fields.price.toLocaleString()}
+                      ¥{(product.fields.price as number).toLocaleString()}
                     </span>
                     <div className="flex items-center text-yellow-400">
                       {'★'.repeat(Math.round(product.fields.rating || 0))}
