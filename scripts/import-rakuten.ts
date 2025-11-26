@@ -157,25 +157,29 @@ function extractBrand(productName: string): string {
 
 // 商品名からカテゴリーを自動判定
 function detectCategory(productName: string): string {
-    const categoryKeywords: Record<string, string[]> = {
-        'スマートウォッチ': ['スマートウォッチ', 'smartwatch', 'apple watch', 'fitbit', 'garmin'],
-        'ノートPC': ['ノートpc', 'ノートパソコン', 'laptop', 'macbook', 'thinkpad', 'surface'],
-        'スマートフォン': ['スマートフォン', 'スマホ', 'iphone', 'android', 'galaxy', 'xperia'],
-        'カメラ': ['カメラ', 'デジカメ', 'デジタルカメラ', 'ミラーレス', 'camera', 'canon', 'nikon', 'sony α'],
-        'タブレット': ['タブレット', 'ipad', 'tablet', 'surface go'],
-        'スマートグラス': ['スマートグラス', 'スマートメガネ', 'smart glass', 'ar glass'],
-        'ワイヤレスイヤホン': ['ワイヤレスイヤホン', 'イヤホン', 'earphone', 'airpods', 'earbuds', 'bluetooth'],
-    };
-
     const lowerName = productName.toLowerCase();
 
-    // キーワードマッチング（優先度順）
-    for (const [category, keywords] of Object.entries(categoryKeywords)) {
-        for (const keyword of keywords) {
-            if (lowerName.includes(keyword.toLowerCase())) {
-                return category;
-            }
-        }
+    // 優先度順にチェック（より具体的なキーワードを先に）
+    if (lowerName.includes('スマートグラス') || lowerName.includes('スマートメガネ') || lowerName.includes('smart glass') || lowerName.includes('ar glass')) {
+        return 'スマートグラス';
+    }
+    if (lowerName.includes('スマートウォッチ') || lowerName.includes('smartwatch') || lowerName.includes('apple watch') || lowerName.includes('fitbit') || lowerName.includes('garmin')) {
+        return 'スマートウォッチ';
+    }
+    if (lowerName.includes('ワイヤレスイヤホン') || lowerName.includes('イヤホン') || lowerName.includes('earphone') || lowerName.includes('airpods') || lowerName.includes('earbuds')) {
+        return 'ワイヤレスイヤホン';
+    }
+    if (lowerName.includes('ノートpc') || lowerName.includes('ノートパソコン') || lowerName.includes('laptop') || lowerName.includes('macbook') || lowerName.includes('thinkpad')) {
+        return 'ノートPC';
+    }
+    if (lowerName.includes('タブレット') || lowerName.includes('ipad') || lowerName.includes('tablet')) {
+        return 'タブレット';
+    }
+    if (lowerName.includes('カメラ') || lowerName.includes('デジカメ') || lowerName.includes('デジタルカメラ') || lowerName.includes('ミラーレス')) {
+        return 'カメラ';
+    }
+    if (lowerName.includes('スマートフォン') || lowerName.includes('スマホ') || lowerName.includes('iphone') || lowerName.includes('galaxy') || lowerName.includes('xperia')) {
+        return 'スマートフォン';
     }
 
     return 'ガジェット'; // デフォルト
