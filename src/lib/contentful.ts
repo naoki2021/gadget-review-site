@@ -39,13 +39,23 @@ export interface ProductSkeleton extends EntrySkeletonType {
 
 export type Product = Entry<ProductSkeleton, undefined, string>;
 
-export async function getAllProducts(): Promise<Product[]> {
-  const response = await contentfulClient.getEntries<ProductSkeleton>({
-    content_type: 'product',
-    order: ['-fields.publishedDate'] as any,
-  });
+export async function getAllProducts(limit = 6): Promise<Product[]> {
+  try {
+    console.log('Fetching products from Contentful...');
+    console.log('Space ID configured:', !!process.env.CONTENTFUL_SPACE_ID);
+    console.log('Access Token configured:', !!process.env.CONTENTFUL_ACCESS_TOKEN);
 
-  return response.items;
+    const entries = await contentfulClient.getEntries<ProductSkeleton>({
+      content_type: 'product',
+      limit,
+      order: ['-sys.createdAt'],
+    });
+    console.log(`Fetched ${entries.items.length} products.`);
+    return entries.items;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
