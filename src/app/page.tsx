@@ -125,9 +125,9 @@ export default async function Home() {
                 className="card-hover overflow-hidden rounded-2xl bg-white shadow-lg dark:bg-slate-800 block"
               >
                 <div className="h-48 bg-slate-200 dark:bg-slate-700 relative">
-                  {product.fields.mainImage?.fields.file.url ? (
+                  {(product.fields.mainImage as any)?.fields?.file?.url ? (
                     <img
-                      src={product.fields.mainImage.fields.file.url}
+                      src={(product.fields.mainImage as any).fields.file.url}
                       alt={product.fields.title}
                       className="w-full h-full object-cover"
                     />
