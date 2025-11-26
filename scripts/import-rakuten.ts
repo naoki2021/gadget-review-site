@@ -186,21 +186,25 @@ const args = process.argv.slice(2);
 const categoryIndex = args.indexOf('--category');
 const limitIndex = args.indexOf('--limit');
 
+const CATEGORIES = [
+    'ワイヤレスイヤホン',
+    'スマートウォッチ',
+    'ノートPC',
+    'スマートフォン',
+    'カメラ',
+    'タブレット',
+];
+
+let category: string;
+
 if (categoryIndex === -1) {
-    console.error('❌ エラー: --category オプションが必要です');
-    console.log('\n使用方法:');
-    console.log('  npm run import-rakuten -- --category "ワイヤレスイヤホン" --limit 5');
-    console.log('\nカテゴリー:');
-    console.log('  - ワイヤレスイヤホン');
-    console.log('  - スマートウォッチ');
-    console.log('  - ノートPC');
-    console.log('  - スマートフォン');
-    console.log('  - カメラ');
-    console.log('  - タブレット');
-    process.exit(1);
+    console.log('カテゴリーが指定されていないため、ランダムに選択します...');
+    category = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+    console.log(`選択されたカテゴリー: ${category}`);
+} else {
+    category = args[categoryIndex + 1];
 }
 
-const category = args[categoryIndex + 1];
 const limit = limitIndex !== -1 ? parseInt(args[limitIndex + 1]) : 5;
 
 importFromRakuten({ category, limit });
