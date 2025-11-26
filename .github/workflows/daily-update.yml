@@ -1,0 +1,55 @@
+name: Daily Gadget Review Update
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 毎日0:00 UTC (9:00 JST)
+  workflow_dispatch: # 手動実行用
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60 # AI生成に時間がかかるため長めに設定
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Ollama
+        run: curl -fsSL https://ollama.com/install.sh | sh
+
+      - name: Start Ollama
+        run: ollama serve &
+
+      - name: Wait for Ollama to start
+        run: |
+          until curl -s http://localhost:11434/api/tags > /dev/null; do
+            echo "Waiting for Ollama..."
+            sleep 5
+          done
+
+      - name: Pull Llama 3.1 Model
+        run: ollama pull llama3.1
+
+      - name: Import Products from Rakuten
+        env:
+          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+          CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.CONTENTFUL_MANAGEMENT_TOKEN }}
+          RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+        run: npm run import-rakuten -- --limit 3 # 1回の実行で3商品まで（時間制限考慮）
+
+      - name: Generate Reviews with AI
+        env:
+          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+          CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.CONTENTFUL_MANAGEMENT_TOKEN }}
+        run: npm run generate-review
