@@ -55,6 +55,9 @@ async function importFromRakuten(options: ImportOptions) {
                 // スペック情報を抽出（商品名から推測）
                 const specs = extractSpecs(product.itemName);
 
+                // カテゴリーを自動判定
+                const detectedCategory = detectCategory(product.itemName);
+
                 // Contentfulエントリー作成
                 const entry = await environment.createEntry('product', {
                     fields: {
@@ -65,7 +68,7 @@ async function importFromRakuten(options: ImportOptions) {
                             'en-US': slug,
                         },
                         category: {
-                            'en-US': options.category,
+                            'en-US': detectedCategory,
                         },
                         brand: {
                             'en-US': extractBrand(product.itemName),
@@ -150,6 +153,32 @@ function extractBrand(productName: string): string {
     }
 
     return '不明';
+}
+
+// 商品名からカテゴリーを自動判定
+function detectCategory(productName: string): string {
+    const categoryKeywords: Record<string, string[]> = {
+        'スマートウォッチ': ['スマートウォッチ', 'smartwatch', 'apple watch', 'fitbit', 'garmin'],
+        'ノートPC': ['ノートpc', 'ノートパソコン', 'laptop', 'macbook', 'thinkpad', 'surface'],
+        'スマートフォン': ['スマートフォン', 'スマホ', 'iphone', 'android', 'galaxy', 'xperia'],
+        'カメラ': ['カメラ', 'デジカメ', 'デジタルカメラ', 'ミラーレス', 'camera', 'canon', 'nikon', 'sony α'],
+        'タブレット': ['タブレット', 'ipad', 'tablet', 'surface go'],
+        'スマートグラス': ['スマートグラス', 'スマートメガネ', 'smart glass', 'ar glass'],
+        'ワイヤレスイヤホン': ['ワイヤレスイヤホン', 'イヤホン', 'earphone', 'airpods', 'earbuds', 'bluetooth'],
+    };
+
+    const lowerName = productName.toLowerCase();
+
+    // キーワードマッチング（優先度順）
+    for (const [category, keywords] of Object.entries(categoryKeywords)) {
+        for (const keyword of keywords) {
+            if (lowerName.includes(keyword.toLowerCase())) {
+                return category;
+            }
+        }
+    }
+
+    return 'ガジェット'; // デフォルト
 }
 
 // スペック情報を抽出（簡易版）
