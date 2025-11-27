@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -69,6 +70,7 @@ export default function RootLayout({
   return (
     <html lang="ja" className={inter.variable}>
       <body className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 antialiased">
+        <GoogleAnalytics />
         <header className="sticky top-0 z-50 w-full border-b border-slate-200/50 bg-white/80 backdrop-blur-lg dark:border-slate-800/50 dark:bg-slate-900/80">
           <div className="container mx-auto flex h-16 items-center justify-between px-4">
             <a href="/" className="flex items-center space-x-2">
