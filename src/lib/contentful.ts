@@ -95,3 +95,38 @@ export async function getProductsByCategory(category: string): Promise<Product[]
 
   return response.items;
 }
+
+// 関連商品を取得（同カテゴリー + 価格帯が近い商品）
+export async function getRelatedProducts(
+  currentProductId: string,
+  category: string,
+  price: number,
+  limit = 5
+): Promise<Product[]> {
+  try {
+    const client = getContentfulClient();
+
+    // 同カテゴリーの商品を取得
+    const entries = await client.getEntries<ProductSkeleton>({
+      content_type: 'product',
+      'fields.category': category,
+      limit: 20, // 多めに取得してフィルタリング
+    } as any);
+
+    // 現在の商品を除外し、価格が近い順にソート
+    const relatedProducts = entries.items
+      .filter((item) => item.sys.id !== currentProductId)
+      .map((item) => ({
+        product: item,
+        priceDiff: Math.abs((item.fields.price as number) - price),
+      }))
+      .sort((a, b) => a.priceDiff - b.priceDiff)
+      .slice(0, limit)
+      .map((item) => item.product);
+
+    return relatedProducts;
+  } catch (error) {
+    console.error('Error fetching related products:', error);
+    return [];
+  }
+}
